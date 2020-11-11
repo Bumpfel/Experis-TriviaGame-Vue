@@ -1,19 +1,28 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app" v-if="polls.length > 0">
+        {{ getQuestion(0) }}
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  export default {
+    name: "App",
+    components: {},
+    data() {
+        fetch("https://opentdb.com/api.php?amount=5&category=11&difficulty=medium&encode=url3986").then(async response => { 
+            const result = await response.text()
+            this.polls = JSON.parse(result).results
+        });
+        return { 
+            polls: [],
+        };
+    },
+    methods: {
+        getQuestion: function(index) {
+            return decodeURIComponent(this.polls[index].question)
+        }
+    }
+  };
 </script>
 
 <style>
