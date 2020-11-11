@@ -1,5 +1,5 @@
 <template>
-    <div id="app" v-if="polls.length > 0">
+    <div id="app">
         {{ getQuestion(0) }}
     </div>
 </template>
@@ -10,8 +10,7 @@
     components: {},
     data() {
         fetch("https://opentdb.com/api.php?amount=5&category=11&difficulty=medium&encode=url3986").then(async response => { 
-            const result = await response.text()
-            this.polls = JSON.parse(result).results
+            this.polls = JSON.parse(await response.text()).results
         });
         return { 
             polls: [],
@@ -19,7 +18,9 @@
     },
     methods: {
         getQuestion: function(index) {
-            return decodeURIComponent(this.polls[index].question)
+            if(this.polls.length > 0) {
+                return decodeURIComponent(this.polls[index].question)
+            }
         }
     }
   };
