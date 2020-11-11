@@ -9,7 +9,7 @@
       {{ format(answer) }}
     </button>
     <ul v-if="currentPollIndex == polls.length">
-  <li v-for="(item,index) in recordedAnswers" :key="index">
+  <li v-for="(item) in recordedAnswers" :key="item.question">
   Question: {{item.question}} <br> Answer: {{ item.answer}} WasCorrect: {{item.wasCorrect}}
   <br><br>
   </li>
