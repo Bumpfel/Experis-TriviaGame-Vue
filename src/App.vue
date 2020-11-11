@@ -1,11 +1,19 @@
 <template>
   <div id="app">
-    {{ format(getNextPoll()) }}
+    <p v-if="currentPollIndex<polls.length">{{ format(getNextPoll()) }}</p>
+    <p v-if="currentPollIndex == polls.length">Your score: {{score}}</p>
+    
     <br />
 
     <button v-for="(answer, index) of getAnswers(currentPollIndex)" :key="index" @click="isCorrect(answer)">
       {{ format(answer) }}
     </button>
+    <ul v-if="currentPollIndex == polls.length">
+  <li v-for="(item,index) in recordedAnswers" :key="index">
+  Question: {{item.question}} <br> Answer: {{ item.answer}} WasCorrect: {{item.wasCorrect}}
+  <br><br>
+  </li>
+</ul>
   </div>
 </template>
 
@@ -40,12 +48,12 @@ export default {
   methods: {
     getNextPoll: function () {
       
-      if (this.polls.length > 0) {
+      if (this.polls.length > 0 && this.currentPollIndex < this.polls.length) {
         return this.polls[this.currentPollIndex].question;
       }
     },
     getAnswers: function () {
-      if (this.polls.length > 0) {
+      if (this.polls.length > 0 && this.currentPollIndex < this.polls.length) {
         const arr = []
         this.polls[this.currentPollIndex].incorrect_answers.forEach(answer => arr.push(answer));
         arr.push(this.polls[this.currentPollIndex].correct_answer);
@@ -57,7 +65,11 @@ export default {
     },
     isCorrect: function (answer) {
       let correct = this.polls[this.currentPollIndex].correct_answer === answer
-      this.recordedAnswers[this.polls[this.currentPollIndex].question] = { answer, wasCorrect: correct }
+      let question = this.polls[this.currentPollIndex].question
+      question = decodeURIComponent(question)
+      answer = decodeURIComponent(answer)
+      this.recordedAnswers[this.polls[this.currentPollIndex].question] = { question, answer, wasCorrect: correct }
+      
       this.currentPollIndex++;
       if(correct){
         this.score++
