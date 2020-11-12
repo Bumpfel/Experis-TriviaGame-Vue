@@ -31,7 +31,14 @@ export default {
         GameScreen,
         ScoreScreen
     },
+    props: {
+        categoryId: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
+        console.log('category: ', this.categoryId)
         this.startGame()
     
         return {
@@ -42,7 +49,7 @@ export default {
             isStarted: false,
             answerOptions: [],
             currentPoll: String,
-            hasEnded: false
+            hasEnded: false,
         };
     },
     methods: {

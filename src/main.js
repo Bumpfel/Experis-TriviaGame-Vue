@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/', component: PickCategory },
-    { path: '/game/:categoryId', component: Game, props: true }
+    { path: '/game', name: 'Game', component: Game, props: true }
 ]
 
 const router = new VueRouter({ routes })

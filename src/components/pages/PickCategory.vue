@@ -17,7 +17,7 @@
 
         <br>
 
-        <router-link :to="'/game/' + selectedCategory">
+        <router-link :to="{ name: 'Game', params: { categoryId: selectedCategory }}">
             <button class="btn btn-primary">Start game</button>
         </router-link>
     </div>
