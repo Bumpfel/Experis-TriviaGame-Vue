@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { format } from '../test/functions.js'
+import { format } from '../../utils/functions.js'
 
 export default {
     name: 'ScoreScreen',
