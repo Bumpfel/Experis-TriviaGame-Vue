@@ -9,7 +9,7 @@
 
 <script>
 export default {
-    name: 'GameScreen',
+    name: 'PollScreen',
     props: {
         poll: {
             question: String,

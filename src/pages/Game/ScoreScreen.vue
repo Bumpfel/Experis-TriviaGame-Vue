@@ -13,7 +13,10 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-warning" @click="$emit('start')">Play again</button>
+    <button class="btn btn-primary m-2" @click="$emit('start')">Play again</button>
+    <router-link to="/">
+        <button class="btn btn-warning m-2">Change settings</button>
+    </router-link>
 </div>
 
 </template>

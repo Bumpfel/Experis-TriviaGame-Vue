@@ -1,10 +1,6 @@
 <template>
     <div>
-        <header class="bg-secondary text-white p-2 pl-4">
-            <h4>Trivia Game</h4>
-            <div class="text-center">Your score: {{ currentScore }}</div>
-        </header>
-    
+        <Header :score="currentScore" />
         <div class="container text-center" v-if="hasLoaded">
             <PollScreen v-if="!hasEnded" :poll="currentPoll" @answer="submitAnswer($event)" />
             <ScoreScreen v-if="hasEnded" :result="recordedResult" @start="startGame()" />
@@ -14,14 +10,16 @@
 
 <script>
 import { format, shuffleArray } from '../../utils/functions.js'
+import Header from '../../components/Header'
 import PollScreen from './PollScreen'
 import ScoreScreen from './ScoreScreen'
 
 export default {
     name: 'Game',
     components: {
+        Header,
         PollScreen,
-        ScoreScreen
+        ScoreScreen,
     },
     props: {
         categoryId: {
@@ -41,11 +39,10 @@ export default {
     
         return {
             polls: [],
-            currentPollIndex: 0,
-            recordedResult: {},
-            currentScore: 0,
-            answerOptions: [],
             currentPoll: {},
+            currentPollIndex: 0,
+            currentScore: 0,
+            recordedResult: {},
             hasEnded: false,
             hasLoaded: false,
         };
@@ -103,8 +100,4 @@ export default {
 </script>
 
 <style scoped>
-header {
-    white-space: nowrap;
-}
-
 </style>

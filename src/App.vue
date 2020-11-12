@@ -6,14 +6,15 @@
 
 <script>
 export default {
-    name: "App"
-};
+    name: 'App'
+}
 </script>
 
 <style>
 .container {
     width: auto;
     margin: 0 auto;
-    margin-top: 50px
+    margin-top: 50px;
+    margin-bottom: 20px;
 }
 </style>
