@@ -1,9 +1,7 @@
 <template>
     <div>
-        <p>Your score: {{ score }}</p>
         <p>{{ format(question) }}</p>
-
-        <button v-for="(answer, index) of answers" :key="index" @click="$emit('answer-event', answer)">{{ format(answer) }}</button>
+        <button class="btn btn-primary m-2" v-for="(answer, index) of answers" :key="index" @click="$emit('answer-event', answer)">{{ format(answer) }}</button>
     </div>
 </template>
 
@@ -15,8 +13,7 @@ export default {
     props: {
         answers: {},
         answersOptions: {},
-        question: String,
-        score: Number
+        question: String
     },
     methods: {
         format: format
@@ -25,4 +22,8 @@ export default {
 </script>
 
 <style scoped>
+div {
+   
+}
+
 </style>

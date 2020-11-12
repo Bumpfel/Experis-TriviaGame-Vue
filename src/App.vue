@@ -1,15 +1,24 @@
 <template>
   <div id="app">
+    <header class="bg-secondary text-white p-2 pl-4">
+      <h4>Trivia Game</h4>
+      <div class="text-center">Your score: {{ currentScore }}</div>
+    </header>
+  
+    <div class="container">
+      <div class="text-center">
+        <button class="btn btn-warning " @click="isStarted = true" v-if="!isStarted">Start game</button>
+      </div>
 
-    <button @click="started = true" v-if="!started">Start game</button>
-
-    <div v-if="started">
-      <GameScreen v-if="currentPollIndex < polls.length" :answers="answerOptions" :question="currentPoll" :score="currentScore" @answer-event="isCorrect($event)" />
-      <ScoreScreen :answers="recordedAnswers" v-if="currentPollIndex == polls.length" />
+      <div v-if="isStarted">
+        <div class="text-center">
+          <GameScreen v-if="!hasEnded" :answers="answerOptions" :question="currentPoll" @answer-event="isCorrect($event)" />
+          <ScoreScreen :answers="recordedAnswers" v-if="hasEnded" @started-event="startGame()" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import ScoreScreen from './components/ScoreScreen'
@@ -32,21 +41,17 @@ export default {
     GameScreen
   },
   data() {
-    fetch("https://opentdb.com/api.php?amount=5&category=11&difficulty=medium&encode=url3986").then(async (response) => {
-      this.polls = JSON.parse(await response.text()).results;
-
-      this.answerOptions = this.getAnswers();
-      this.currentPoll = this.getQuestion();
-    });
+    this.startGame()
     
     return {
       polls: [],
       currentPollIndex: 0,
       recordedAnswers: {},
       currentScore: 0,
-      started: false,
+      isStarted: false,
       answerOptions: [],
-      currentPoll: String
+      currentPoll: String,
+      hasEnded: false
     };
   },
   methods: {
@@ -72,12 +77,28 @@ export default {
       this.recordedAnswers[this.polls[this.currentPollIndex].question] = { answer, wasCorrect: correct };
       this.currentPollIndex++;
       if (correct) {
-        this.score += 10;
+        this.currentScore += 10;
       }
       if(this.currentPollIndex < this.polls.length) {
         this.answerOptions = this.getAnswers();
         this.currentPoll = this.getQuestion();
+      } else {
+        this.hasEnded = true
       }
+    },
+    startGame: function() {
+      this.currentPollIndex = 0
+
+      fetch("https://opentdb.com/api.php?amount=5&category=11&difficulty=medium&encode=url3986").then(async (response) => {
+        this.polls = JSON.parse(await response.text()).results;
+
+        this.answerOptions = this.getAnswers();
+        this.currentPoll = this.getQuestion();
+        
+        this.hasEnded = false
+        this.recordedAnswers = {}
+        this.currentScore = 0
+      });
     },
     format: format
   },
@@ -85,12 +106,13 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+header {
+  white-space: nowrap;
+}
+
+.container {
+  width: auto;
+  margin: 0 auto;
+  margin-top: 50px
 }
 </style>
