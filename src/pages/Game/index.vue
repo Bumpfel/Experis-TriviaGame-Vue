@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header :score="currentScore" />
+        <Header :gameData="{ score: currentScore, category: categoryName, amountOfQuestions, currentQuestion: currentPollIndex + 1, difficulty: displayDifficulty }" />
         <div class="container text-center" v-if="hasLoaded">
             <PollScreen v-if="!hasEnded" :poll="currentPoll" @answer="submitAnswer($event)" />
             <ScoreScreen v-if="hasEnded" :result="recordedResult" @start="startGame()" />
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { format, shuffleArray } from '../../utils/functions.js'
+import { format, shuffleArray, sleep } from '../../utils/functions.js'
 import Header from '../../components/Header'
 import PollScreen from './PollScreen'
 import ScoreScreen from './ScoreScreen'
@@ -22,23 +22,21 @@ export default {
         ScoreScreen,
     },
     props: {
-        categoryId: {
-            default: 11,
-            // type: Number,
-            // required: true
-        },
-        amountOfQuestions: {
-            default: 10,
-        },
-        difficulty: {
-            default: 'medium'
-        }
+        categoryId: Number,
+        amountOfQuestions: Number,
+        difficulty: String,
     },
     data() {
-        this.startGame()
-    
+        if(this.categoryId === undefined) {
+            this.$router.replace('/')
+        } else {
+            this.startGame()
+        }
+            
         return {
             polls: [],
+            categoryName: '',
+            displayDifficulty: '',
             currentPoll: {},
             currentPollIndex: 0,
             currentScore: 0,
@@ -69,7 +67,8 @@ export default {
             shuffleArray(poll.answers);
             return poll;
         },
-        submitAnswer: function (answer) {
+        submitAnswer:  async function (answer) {
+           await sleep(1500)
             this.recordedResult[this.currentPollIndex] = { question: this.currentPoll.question, answer, correctAnswer: this.currentPoll.correctAnswer };
 
             if (this.currentPoll.correctAnswer === answer) {
@@ -83,8 +82,16 @@ export default {
             }
         },
         startGame: function() {
+            // TODO check if sanitation is necessary
+            console.log(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}&category=${this.categoryId}&difficulty=${this.difficulty}&encode=url3986`)
+
+            this.displayDifficulty = this.difficulty.charAt(0).toUpperCase() + this.difficulty.slice(1)
+            console.log(this.displayDifficulty)
+
             fetch(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}&category=${this.categoryId}&difficulty=${this.difficulty}&encode=url3986`).then(async response => {
                 this.polls = JSON.parse(await response.text()).results;
+
+                this.categoryName = format(this.polls[0].category)
 
                 this.currentPoll = this.getNextPoll(true);
                 

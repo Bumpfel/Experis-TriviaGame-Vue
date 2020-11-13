@@ -8,7 +8,7 @@
                 <div class="form-group">
                     <label for="difficulty">Choose category</label>
                     <select v-model="selectedCategory" class="form-control">
-                        <option v-for="category of categories" :key="category.id" :value="category.id" >{{ category.name }}</option>
+                        <option v-for="category of categories" :key="category.id" :value="category.id">{{ category.name }}</option>
                     </select>
                 </div>
                 
@@ -29,9 +29,7 @@
 
             <br>
 
-            <router-link :to="{ name: 'Game', params: { categoryId: selectedCategory, amountOfQuestions: nrQuestions, difficulty: selectedDifficulty }}">
-                <button class="btn btn-primary">Start game</button>
-            </router-link>
+            <button class="btn btn-primary" @click="startGame">Start game</button>
         </div>
     </div>
 </template>
@@ -56,6 +54,14 @@ export default {
             selectedDifficulty: 'medium',
             nrQuestions: 10
         }
+    },
+    methods: {
+        startGame() {
+            // console.log('diff:', this.difficulties[this.selectedDifficulty])
+
+            // if(this.selectedCategory && this.nrQuestions > 0 && this.difficulties[this.selectedDifficulty])
+            this.$router.push({ name: 'Game', params: { categoryId: this.selectedCategory, amountOfQuestions: this.nrQuestions | 1, difficulty: this.selectedDifficulty }})
+        }
     }
 }
 </script>
@@ -70,4 +76,7 @@ form {
     max-width: 500px;
 }
 
+option {
+    text-transform: capitalize;
+}
 </style>
