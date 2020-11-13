@@ -27,20 +27,17 @@ export default {
         }
     },
     methods: {
-        onClick: function(answer, index){
+        onClick: function(answer, index) {
             const clickedButton = document.querySelector('#button' + index)
 
-            if(this.poll.correctAnswer === answer){
-                
-                clickedButton.className = 'btn btn-success m-2'
-                this.correctBtn = true
-            }
-            else{
-                const correctButton = document.querySelector('#button' + this.correctAnswerIndex)
-                correctButton.className = 'btn btn-success m-2'
+            const buttons = document.querySelectorAll('button')
+            buttons.forEach(btn => btn.disabled = 'true')
+
+            const correctButton = document.querySelector('#button' + this.correctAnswerIndex)
+            correctButton.className = 'btn btn-success m-2'
+            if(this.poll.correctAnswer !== answer) {
                 correctButton.style.opacity = .7
                 clickedButton.className = 'btn btn-danger m-2'
-                this.incorrectBtn = true
             }
             this.$emit('answer', answer)
         },
@@ -50,3 +47,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    button:disabled, button[disabled] {
+        opacity: 1;
+    }
+</style>

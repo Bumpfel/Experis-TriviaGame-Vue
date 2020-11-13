@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header :gameData="{ score: currentScore, category: categoryName, amountOfQuestions, currentQuestion: currentPollIndex + 1, difficulty: displayDifficulty }" />
+        <Header :gameData="{ score: currentScore, category: categoryName, amountOfQuestions, currentQuestion: currentPollIndex + 1, difficulty }" />
         <div class="container text-center" v-if="hasLoaded">
             <PollScreen v-if="!hasEnded" :poll="currentPoll" @answer="submitAnswer($event)" />
             <ScoreScreen v-if="hasEnded" :result="recordedResult" @start="startGame()" />
@@ -23,20 +23,20 @@ export default {
     },
     props: {
         categoryId: Number,
-        amountOfQuestions: Number,
+        amountOfQuestions: String,
         difficulty: String,
     },
     data() {
+        // check that necessary properties are set
         if(this.categoryId === undefined) {
             this.$router.replace('/')
         } else {
             this.startGame()
         }
-            
+
         return {
             polls: [],
             categoryName: '',
-            displayDifficulty: '',
             currentPoll: {},
             currentPollIndex: 0,
             currentScore: 0,
@@ -82,17 +82,14 @@ export default {
             }
         },
         startGame: function() {
-            // TODO check if sanitation is necessary
-            console.log(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}&category=${this.categoryId}&difficulty=${this.difficulty}&encode=url3986`)
+            this.hasLoaded = false
+            
+            const dif = this.difficulty === 'any' ? '' : `&difficulty=${this.difficulty}`
 
-            this.displayDifficulty = this.difficulty.charAt(0).toUpperCase() + this.difficulty.slice(1)
-            console.log(this.displayDifficulty)
-
-            fetch(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}&category=${this.categoryId}&difficulty=${this.difficulty}&encode=url3986`).then(async response => {
+            fetch(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}${dif}&category=${this.categoryId}&encode=url3986`).then(async response => {
                 this.polls = JSON.parse(await response.text()).results;
 
                 this.categoryName = format(this.polls[0].category)
-
                 this.currentPoll = this.getNextPoll(true);
                 
                 this.hasLoaded = true
