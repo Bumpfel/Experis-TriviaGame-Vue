@@ -10,3 +10,10 @@ export const shuffleArray = (array) => {
       array[j] = temp;
     }
   };
+
+export function sleep (ms){
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  }
+)}
+  

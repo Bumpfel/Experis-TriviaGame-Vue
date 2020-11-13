@@ -3,7 +3,14 @@
         <router-link to="/">
             <h4>Trivia Game</h4>
         </router-link>
-        <div v-if="score > -1" class="text-center">Your score: {{ score }}</div>
+        <div v-if="gameData">
+            <div>Selected category: {{ gameData.category }}</div>
+            <div>Question: {{ gameData.currentQuestion }} of {{ gameData.amountOfQuestions }}</div>
+            <div class="capitalize">Difficulty: {{ gameData.difficulty }}</div>
+            <div class="text-center">
+                <div>Your score: {{ gameData.score }}</div>
+            </div>
+        </div>
     </header>
 </template>
 
@@ -11,11 +18,8 @@
 export default {
     name: 'Header',
     props: {
-        score: {
-            type: Number,
-            default: -1,
-        }
-    }
+       gameData: {}
+    },
 }
 </script>
 
@@ -29,5 +33,9 @@ a {
 a:hover {
     color: white;
     text-decoration: none;
+}
+
+.capitalize {
+    text-transform: capitalize;
 }
 </style>

@@ -17,4 +17,11 @@ export default {
     margin-top: 50px;
     margin-bottom: 20px;
 }
+
+.green {
+    color: green;
+}
+.red {
+    color: red;
+}
 </style>
