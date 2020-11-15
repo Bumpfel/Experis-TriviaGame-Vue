@@ -24,7 +24,7 @@
         <button class="btn btn-warning m-2">Change settings</button>
     </router-link>
     <div class="video-container" ref="vContainer">
-        <VideoBg :sources="['./confetti_low_480p.mp4']" id="fullvid"/>
+        <VideoBg :sources="['./confetti.mp4']" id="fullvid"/>
     </div>
 </div>
 
