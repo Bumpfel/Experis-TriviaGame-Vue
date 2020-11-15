@@ -1,0 +1,1 @@
+export const difficulties = { any: 'Any', easy: 'Easy', medium: 'Medium', hard: 'Hard' }

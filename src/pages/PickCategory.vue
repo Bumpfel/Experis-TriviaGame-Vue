@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="nrQuestions">Amount of questions</label>
+                    <label for="nrQuestions">Amount of questions (max 50)</label>
                     <select class="form-control" id="nrQuestionsSelect" v-model="nrQuestions" @change="checkQuestions">
                         <option>{{ customValue }}</option>
                         <option>5</option>
@@ -34,14 +34,14 @@
                     </select>
                     <div class="d-flex">
                         <button id="nrQuestionButton" class="btn btn-light d-none" type="button" @click="switchQuestionInput"><i class="fa fa-angle-left" /></button>
-                        <input type="number" placeholder="Enter a number" class="form-control d-none" id="nrQuestionsInput" min="1" v-model="nrQuestions">
+                        <input type="number" placeholder="Enter a number" class="form-control d-none" id="nrQuestionsInput" v-model="nrQuestions">
                     </div>
                 </div>
 
-                <small class="red">{{ errorMsg }}</small>
+                <small class="red">{{ errorMsg + errMsg }}</small>
                 <br><br>
 
-                <button class="btn btn-primary" @click.prevent="startGame">Start game</button>
+                <button class="btn btn-primary" type="submit" @click.prevent="startGame">Start game</button>
             </form>
         </div>
     </div>
@@ -49,38 +49,43 @@
 
 <script>
 import Header from '../components/Header'
+import { difficulties } from '../utils/enums'
 
 export default {
     name: 'PickCategory',
     components: {
         Header
     },
+    props: {
+        errMsg: {
+            type: String,
+            default: ''
+        },
+        infoMsg: {
+            type: String,
+            default: ''
+        },
+    },
     data() {
         fetch('https://opentdb.com/api_category.php').then(async response => {
             const result = JSON.parse(await response.text());
             this.categories = result.trivia_categories;
             this.selectedCategory = this.categories[0].id
-            this.selectedDifficulty = this.difficulties.medium
-        })
+        })      
+
         return {
             categories: [],
             customValue: '- Custom -',
-            difficulties: { any: 'any', easy: 'easy', medium: 'medium', hard: 'hard' },
+            difficulties: new Set(Object.values(difficulties)),
             selectedCategory: -1,
-            selectedDifficulty: '',
+            selectedDifficulty: 'Medium',
             nrQuestions: '10',
             errorMsg: ''
         }
     },
     methods: {
         startGame() {
-            // validates necessary properties
-            if(this.selectedCategory >= this.categories[0].id && this.selectedCategory <= this.categories[this.categories.length - 1].id
-            && this.nrQuestions > 0 && this.difficulties[this.selectedDifficulty]) {
-                this.$router.push({ name: 'Game', params: { categoryId: this.selectedCategory, amountOfQuestions: this.nrQuestions, difficulty: this.selectedDifficulty }})
-            } else {
-                this.errorMsg = 'Invalid game parameters'
-            }
+            this.$router.push({ name: 'Game', params: { categoryId: this.selectedCategory, requestedQuestions: this.nrQuestions, difficulty: this.selectedDifficulty }})
         },
         checkQuestions() {
             if(this.nrQuestions === this.customValue) {

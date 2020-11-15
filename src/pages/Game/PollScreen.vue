@@ -1,14 +1,18 @@
 <template>
     <div>
         <div>{{ poll.question }}</div>
-        <button class="btn btn-outline-primary m-2"
-        v-for="(answer, index) of poll.answers" :id="'button' + index" :key="poll.question + answer" @click="onClick(answer, index)">
-            {{ answer }}
-        </button>
+        <fieldset>
+            <button class="btn btn-outline-primary m-2"
+            v-for="(answer, index) of poll.answers" :id="'button' + index" :key="poll.question + answer" @click="chooseOption(answer, index)">
+                {{ answer }}
+            </button>
+        </fieldset>
     </div>
 </template>
 
 <script>
+import { sleep } from '../../utils/functions.js'
+
 export default {
     name: 'PollScreen',
     created() {
@@ -27,19 +31,21 @@ export default {
         }
     },
     methods: {
-        onClick: function(answer, index) {
-            const clickedButton = document.querySelector('#button' + index)
+        chooseOption: async function(answer, index) {
+            const clickedButton = this.$el.querySelector('#button' + index)
 
-            const buttons = document.querySelectorAll('button')
-            buttons.forEach(btn => btn.disabled = 'true')
+            const fieldset = this.$el.querySelector('fieldset')
+            fieldset.disabled = true
 
-            const correctButton = document.querySelector('#button' + this.correctAnswerIndex)
+            const correctButton = this.$el.querySelector('#button' + this.correctAnswerIndex)
             correctButton.className = 'btn btn-success m-2'
             if(this.poll.correctAnswer !== answer) {
-                correctButton.style.opacity = .7
+                correctButton.style.opacity = .8
                 clickedButton.className = 'btn btn-danger m-2'
             }
+            await sleep(1500)
             this.$emit('answer', answer)
+            fieldset.disabled = false
         },
         getCorrectAnswerIndex() {
             return this.poll.answers.findIndex(answer => answer === this.poll.correctAnswer)

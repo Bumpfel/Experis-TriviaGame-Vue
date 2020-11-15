@@ -1,8 +1,8 @@
 <template>
     <header class="bg-secondary text-white p-2 pl-4">
-        <router-link to="/">
-            <h4>Trivia Game</h4>
-        </router-link>
+        <a href="#">
+            <h4 @click="reset">Trivia Game</h4>
+        </a>
         <div v-if="gameData">
             <div>Selected category: {{ gameData.category }}</div>
             <div>Question: {{ gameData.currentQuestion }} of {{ gameData.amountOfQuestions }}</div>
@@ -20,6 +20,13 @@ export default {
     props: {
        gameData: {}
     },
+    methods: {
+        reset() {
+            if(confirm('Are you sure you want to reset the game?')) {
+                this.$router.replace({ name: 'Home' })
+            }
+        }
+    }
 }
 </script>
 
