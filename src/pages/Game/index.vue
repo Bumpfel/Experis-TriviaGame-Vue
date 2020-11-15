@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Header :gameData="{ score: currentScore, category: categoryName, amountOfQuestions, currentQuestion: currentPollIndex + 1, difficulty }" />
+        <Header :gameData="{ score: currentScore, category: categoryName, amountOfQuestions: polls.length, currentQuestion: currentPollIndex + 1, difficulty }" />
         <div class="container text-center" v-if="hasLoaded">
             <PollScreen v-if="!hasEnded" :poll="currentPoll" @answer="submitAnswer($event)" />
             <ScoreScreen v-if="hasEnded" :result="recordedResult" @start="startGame()" />
@@ -9,7 +9,8 @@
 </template>
 
 <script>
-import { format, shuffleArray, sleep } from '../../utils/functions.js'
+import { format, shuffleArray } from '../../utils/functions.js'
+import { difficulties } from '../../utils/enums.js'
 import Header from '../../components/Header'
 import PollScreen from './PollScreen'
 import ScoreScreen from './ScoreScreen'
@@ -23,7 +24,7 @@ export default {
     },
     props: {
         categoryId: Number,
-        amountOfQuestions: String,
+        requestedQuestions: String,
         difficulty: String,
     },
     data() {
@@ -68,7 +69,7 @@ export default {
             return poll;
         },
         submitAnswer:  async function (answer) {
-           await sleep(1500)
+
             this.recordedResult[this.currentPollIndex] = { question: this.currentPoll.question, answer, correctAnswer: this.currentPoll.correctAnswer };
 
             if (this.currentPoll.correctAnswer === answer) {
@@ -84,19 +85,50 @@ export default {
         startGame: function() {
             this.hasLoaded = false
             
-            const dif = this.difficulty === 'any' ? '' : `&difficulty=${this.difficulty}`
+            const dif = this.difficulty === difficulties.any ? '' : `&difficulty=${this.difficulty.toLowerCase()}`
 
-            fetch(`https://opentdb.com/api.php?amount=${this.amountOfQuestions}${dif}&category=${this.categoryId}&encode=url3986`).then(async response => {
-                this.polls = JSON.parse(await response.text()).results;
+            fetch(`https://opentdb.com/api.php?amount=${this.requestedQuestions}${dif}&category=${this.categoryId}&encode=url3986`).then(async (response) => {
+                const parsedResponse = JSON.parse(await response.text())
 
-                this.categoryName = format(this.polls[0].category)
-                this.currentPoll = this.getNextPoll(true);
-                
-                this.hasLoaded = true
-                this.hasEnded = false
-                this.recordedResult = {}
-                this.currentScore = 0
+                switch(parsedResponse.response_code) {
+                    // ok
+                    case 0:
+                        this.polls = parsedResponse.results;
+                        if(this.polls.length > 0) {
+                            this.categoryName = format(this.polls[0].category)
+                            this.currentPoll = this.getNextPoll(true);
+                            
+                            this.hasLoaded = true
+                            this.hasEnded = false
+                            this.recordedResult = {}
+                            this.currentScore = 0
+                        }   
+                        break;
+                    
+                    // no result
+                    case 1:
+                        this.goBack(`Couldn't find the requested amount of questions for this category. Choose a lower number`, true)
+                        break;
+                    
+                    // invalid params
+                    case 2: 
+                        this.goBack(`Invalid parameters`, true)
+                        break;
+                    
+                    // some token error
+                    default:    
+                        this.goBack(`Unkown error`, true)
+
+                }
+
+
+                 
             });
+
+        },
+        goBack: function (msg, isErroneous) {            
+            const payload = isErroneous ? { errMsg: msg } : { infoMsg: msg }
+            this.$router.replace({ name: 'Home', params: payload })
         },
         format: format
     },

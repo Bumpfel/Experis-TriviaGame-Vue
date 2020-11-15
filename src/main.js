@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 
 const routes = [
-    { path: '/', component: PickCategory },
+    { path: '/', name: 'Home', component: PickCategory, props: true },
     { path: '/game', name: 'Game', component: Game, props: true }
 ]
 
@@ -19,5 +19,3 @@ new Vue({
     router,
     render: h => h(App),
 }).$mount('#app')
-
-
