@@ -1,5 +1,5 @@
 # Experis-TriviaGame-Vue
-This is a Trivia game application built with Vue, bootstrap, html and css.
+This is a Trivia game application built with Vue, bootstrap, html and css according to [instructions](instructions.pdf).
 
 The questions for the game is provided by [The open trivia Database API.](https://opentdb.com/api_config.php)
 
