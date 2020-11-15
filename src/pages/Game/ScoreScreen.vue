@@ -4,7 +4,7 @@
         
         <h2>Results</h2>
 
-        <div class="result" v-for="(poll, index) in result" :key="index" ref="resultList">
+        <div class="result" v-for="(poll, index) in result" :key="index">
             {{ poll.question }}
             <div :class="{ green: wasCorrect(poll), red: !wasCorrect(poll) }">
                 Your answer: {{ poll.answer }}
@@ -14,16 +14,13 @@
             </div>
         </div>
 
-        <!-- <div class="result" v-for="(t, index) of test" :key="'t' + index">
-            {{ t }}
-        </div> -->
     </div>
     <button class="btn btn-primary m-2" @click="$emit('start')">Play again</button>
     
     <router-link to="/">
         <button class="btn btn-warning m-2">Change settings</button>
     </router-link>
-    <div class="video-container" ref="vContainer">
+    <div class="video-container">
         <VideoBg :sources="['./confetti.mp4']" id="fullvid"/>
     </div>
 </div>
@@ -52,17 +49,9 @@ export default {
         );
         video.style.height = scrollHeight + 'px'
     },
-    data() {
-        return {
-            test: ['question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question', 'question']
-        }
-    },
     methods: {
         wasCorrect: function(poll) {
             return poll.correctAnswer === poll.answer
-        },
-        matchHeight: function(){
-            this.$refs.vContainer.clientHeight = this.$refs.resultList.clientHeight
         },
         format: format
     }
