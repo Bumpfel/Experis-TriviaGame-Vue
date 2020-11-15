@@ -22,7 +22,7 @@ export default {
     },
     methods: {
         reset() {
-            if(confirm('Are you sure you want to reset the game?')) {
+            if(this.$router.history.current.name !== 'Home' && confirm('Are you sure you want to reset the game?')) {
                 this.$router.replace({ name: 'Home' })
             }
         }
