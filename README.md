@@ -47,4 +47,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Created By
 
-[Eric Enooksson](https://github.com/Bumpfel/), [Emil Oja](https://github.com/xtrmil)
+[Eric Enoksson](https://github.com/Bumpfel/), [Emil Oja](https://github.com/xtrmil)
